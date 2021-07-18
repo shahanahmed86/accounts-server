@@ -19,15 +19,61 @@ model Admin {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String
-  role      Role     @default(User)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  username    String   @unique
+  password    String
+  access      Access   @default(Guest)
+  heads       Head[]
+  entries     Entry[]
+  isSuspended Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-enum Role {
+enum Access {
   Admin
-  User
+  Guest
+}
+
+model Head {
+  id             String   @id @default(uuid())
+  label          String
+  nature         Nature
+  parent         Head?    @relation(name: "ParentToChildren", fields: [parentId], references: [id])
+  parentId       String?
+  children       Head[]   @relation(name: "ParentToChildren")
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String
+  entries        Entry[]
+  isTransactable Boolean  @default(false)
+  isSuspended    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum Nature {
+  ASSET
+  EXPENSE
+  LIABILITY
+  EQUITY
+  REVENUE
+}
+
+model Entry {
+  id          String    @id @default(uuid())
+  type        EntryType
+  amount      Float
+  description String
+  head        Head      @relation(fields: [headId], references: [id])
+  headId      String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  isSuspended Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum EntryType {
+  DEBIT
+  CREDIT
 }

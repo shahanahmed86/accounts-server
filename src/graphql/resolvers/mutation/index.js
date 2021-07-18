@@ -1,7 +1,9 @@
 import admin from './admin';
+import user from './user';
 
 const Mutation = {
-	...admin
+	...admin,
+	...user
 };
 
 export default Mutation;

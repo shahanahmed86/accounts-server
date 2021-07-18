@@ -33,8 +33,8 @@ export const checkData = async ({
 	relatedValue,
 	title,
 	id,
-	checkDuplication,
-	checkSuspension
+	checkDuplication = false,
+	checkSuspension = false
 }) => {
 	const where = { [key]: value };
 	if (relatedTableRef) where[relatedTableRef] = { [relatedKey]: relatedValue };

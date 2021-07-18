@@ -14,7 +14,8 @@ const adminSchema = gql`
 	}
 
 	extend type Mutation {
-		signInAdmin(username: String!, password: String!): Admin! @guest
+		signInAdmin(username: String!, password: String!): Admin! @guest(shouldAdmin: true)
+		signOutAdmin: Boolean! @auth(shouldAdmin: true)
 	}
 `;
 

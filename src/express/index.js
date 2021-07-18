@@ -41,8 +41,7 @@ app.use(
 		store,
 		name: SESS_NAME,
 		secret: SESS_SECRET,
-		resave: true,
-		rolling: true,
+		resave: false,
 		saveUninitialized: false,
 		cookie: {
 			maxAge: SESS_LIFETIME,

@@ -1,7 +1,8 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { SESS_NAME } from '../config';
+import { IN_PROD, SESS_NAME } from '../config';
+import { checkData } from '.';
 
-const signedIn = (req, key) => req.session[key];
+const signedIn = (req, key) => (key ? req.session[key] : req.session);
 
 export const ensureSignedIn = (req, doNotThrow, key) => {
 	if (!signedIn(req, key) && !doNotThrow) {
@@ -9,14 +10,14 @@ export const ensureSignedIn = (req, doNotThrow, key) => {
 	}
 };
 
-export const ensureSignedOut = (req) => {
+export const ensureSignedOut = (req, key) => {
 	if (signedIn(req, key)) {
 		throw new AuthenticationError('You are already signed in.');
 	}
 };
 
-export const signOut = (req, res) =>
-	new Promise((resolve, reject) => {
+export const signOut = (req, res) => {
+	return new Promise((resolve, reject) => {
 		req.session.destroy((err) => {
 			if (err) reject(err);
 
@@ -25,3 +26,25 @@ export const signOut = (req, res) =>
 			resolve(true);
 		});
 	});
+};
+
+export const getUserData = async (
+	context,
+	tableRef,
+	key,
+	value,
+	title,
+	role,
+	checkSuspension = false
+) => {
+	try {
+		const user = await checkData({ tableRef, key, value, title, checkSuspension });
+		user.role = role;
+
+		return user;
+	} catch (error) {
+		if (!IN_PROD) console.error(error);
+		await signOut(context.req, context.res);
+		throw new AuthenticationError('Unauthorized Access detected...');
+	}
+};

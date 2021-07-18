@@ -6,10 +6,10 @@ const rootSchema = gql`
 	# directives
 	directive @auth(
 		shouldAdmin: Boolean = false
-		shouldAccount: Boolean = false
+		shouldUser: Boolean = false
 		doNotThrow: Boolean = false
 	) on FIELD_DEFINITION
-	directive @guest(doNotThrow: Boolean = false) on FIELD_DEFINITION
+	directive @guest(shouldAdmin: Boolean = false, shouldUser: Boolean = false) on FIELD_DEFINITION
 
 	type Query {
 		_: Boolean

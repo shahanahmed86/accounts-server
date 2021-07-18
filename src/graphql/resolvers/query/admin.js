@@ -1,7 +1,7 @@
+import { adminController } from '../../../controllers';
+
 const admin = {
-	loggedInAdmin: async (_, __, context) => {
-		return context.req.user;
-	}
+	loggedInAdmin: (...args) => adminController.loggedInAdmin(...args)
 };
 
 export default admin;
