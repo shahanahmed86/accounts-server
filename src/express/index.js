@@ -16,6 +16,8 @@ import {
 	IN_PROD
 } from '../config';
 
+import { adminRoutes } from './routes';
+
 const app = express();
 
 // parser
@@ -50,5 +52,7 @@ app.use(
 		}
 	})
 );
+
+app.use('/admin', adminRoutes);
 
 export default app;

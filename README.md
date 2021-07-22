@@ -50,3 +50,23 @@ get "sess:lHoGnDimxq3Lz5j0cRWuEp3wivXtgSBB"
 ttl "sess:lHoGnDimxq3Lz5j0cRWuEp3wivXtgSBB"
 del "sess:lHoGnDimxq3Lz5j0cRWuEp3wivXtgSBB"
 ```
+
+## curl
+
+```sh
+curl localhost:4000/admin/logged-in \
+  --cookie 'sid=s%3A92gF7C6YJ9IXjXLuHPZaJrNRD9p3GAdZ.yioRLj1f7vtp49WVwScd8pEq0imlqXaRjgmjWWChA3w'
+
+curl -X POST localhost:4000/admin/sign-in -H 'Content-Type: application/json' -v -d \
+  '{"username":"admin","password":"admin"}'
+
+curl -X POST localhost:4000/admin/sign-out \
+  --cookie 'sid=s%3A92gF7C6YJ9IXjXLuHPZaJrNRD9p3GAdZ.yioRLj1f7vtp49WVwScd8pEq0imlqXaRjgmjWWChA3w'
+
+# flags
+-v # verbose response
+-d # body in JSON format
+-X # method like put, post, get, delete
+--cookie # obviously
+-H # headers
+```
