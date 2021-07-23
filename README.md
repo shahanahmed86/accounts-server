@@ -55,13 +55,13 @@ del "sess:lHoGnDimxq3Lz5j0cRWuEp3wivXtgSBB"
 
 ```sh
 curl localhost:4000/admin/logged-in \
-  --cookie 'sid=s%3A92gF7C6YJ9IXjXLuHPZaJrNRD9p3GAdZ.yioRLj1f7vtp49WVwScd8pEq0imlqXaRjgmjWWChA3w'
+  --cookie 'sid=s%3AhRKn3B_AOJjMsNkl8HnRQhC34LYwdwE2.ZHfP%2FXbh%2FNxJUqJSCr%2FUhAlE8JJ9jtgbQauGXLm7T78'
 
 curl -X POST localhost:4000/admin/sign-in -H 'Content-Type: application/json' -v -d \
   '{"username":"admin","password":"admin"}'
 
 curl -X POST localhost:4000/admin/sign-out \
-  --cookie 'sid=s%3A92gF7C6YJ9IXjXLuHPZaJrNRD9p3GAdZ.yioRLj1f7vtp49WVwScd8pEq0imlqXaRjgmjWWChA3w'
+  --cookie 'sid=s%3AhRKn3B_AOJjMsNkl8HnRQhC34LYwdwE2.ZHfP%2FXbh%2FNxJUqJSCr%2FUhAlE8JJ9jtgbQauGXLm7T78'
 
 # flags
 -v # verbose response

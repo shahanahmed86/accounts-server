@@ -39,6 +39,7 @@
 		"express-session": "^1.17.2",
 		"graphql": "^15.5.1",
 		"ioredis": "^4.27.6",
+		"joi": "^17.4.1",
 		"morgan": "^1.10.0"
 	},
 	"devDependencies": {

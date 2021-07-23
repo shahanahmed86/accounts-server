@@ -34,12 +34,10 @@ export const getUserData = async (
 	key,
 	value,
 	title,
-	role,
 	checkSuspension = false
 ) => {
 	try {
 		const user = await checkData({ tableRef, key, value, title, checkSuspension });
-		user.role = role;
 
 		return user;
 	} catch (error) {

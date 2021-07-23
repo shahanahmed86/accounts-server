@@ -18,7 +18,7 @@ export const saveFile = (pipe, image, old) => {
 			pipe(createWriteStream(path.join('./uploads', filename)));
 
 			stream
-				.on('error', (error) => reject(new Error(error.message)))
+				.on('error', (error) => reject(new ApolloError(error.message)))
 				.on('finish', () => resolve(filename));
 		});
 	});

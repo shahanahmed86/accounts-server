@@ -7,14 +7,18 @@ export async function checkAuth(context, args) {
 		ensureSignedIn(context.req, doNotThrow, 'adminId');
 
 		const { adminId } = context.req.session;
-		const admin = await getUserData(context, 'admin', 'id', adminId, 'Admin', 'admin');
+		const admin = await getUserData(context, 'admin', 'id', adminId, 'Admin');
+		admin.password = null;
+		admin.role = 'admin';
 
 		context.res.locals.user = admin;
 	} else if (shouldUser && 'userId' in context.req.session) {
 		ensureSignedIn(context.req, doNotThrow, 'userId');
 
 		const { userId } = context.req.session;
-		const user = await getUserData(context, 'user', 'id', userId, 'User', 'user', true);
+		const user = await getUserData(context, 'user', 'id', userId, 'User', true);
+		user.password = null;
+		user.role = 'user';
 
 		context.res.locals.user = user;
 	} else {

@@ -22,7 +22,13 @@ model User {
   id          String   @id @default(uuid())
   username    String   @unique
   password    String
-  access      Access   @default(Guest)
+  firstName   String
+  lastName    String
+  email       String   @unique
+  cell        String   @unique
+  avatar      String?
+  isVerified  Boolean  @default(false)
+  socials     Social[]
   heads       Head[]
   entries     Entry[]
   isSuspended Boolean  @default(false)
@@ -30,9 +36,16 @@ model User {
   updatedAt   DateTime @updatedAt
 }
 
-enum Access {
-  Admin
-  Guest
+model Social {
+  id           String   @id @default(uuid())
+  firebase_uid String
+  avatar       String
+  provider     String
+  payload      String
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Head {
