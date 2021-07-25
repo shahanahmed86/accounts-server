@@ -6,7 +6,7 @@ export * from './signOutUser';
 
 export * from './password';
 
-export * from './socials';
+export * from './social';
 
 export * from './avatar';
 

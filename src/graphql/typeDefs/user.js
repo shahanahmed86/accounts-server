@@ -5,19 +5,22 @@ const userSchema = gql`
 		id: String!
 		username: String!
 		password: String
+		firstName: String!
+		lastName: String!
 		email: String!
 		cell: String!
 		avatar: String
-		socials: [Social!]
+		social: Social!
 		createdAt: Date!
 		updatedAt: Date!
 	}
 
 	type Social {
 		id: String!
+		firebase_uid: String!
 		avatar: String
 		provider: String!
-		payload: String!
+		metadata: String!
 		user: User!
 		createdAt: Date!
 		updatedAt: Date!
@@ -34,9 +37,11 @@ const userSchema = gql`
 			username: String!
 			password: String!
 			confirmPassword: String!
+			firstName: String!
+			lastName: String!
 			email: String!
 			cell: String!
-			avatar: Upload
+			avatar: Upload!
 		): User @auth(shouldAdmin: true)
 		suspendUser(id: String!): User @auth(shouldAdmin: true)
 		restoreSuspendedUser(id: String!): User @auth(shouldAdmin: true)

@@ -1,22 +1,32 @@
 import bcrypt from 'bcryptjs';
-import { ApolloError, AuthenticationError } from 'apollo-server-errors';
-import { prisma } from '../../utils';
+import { ApolloError } from 'apollo-server-errors';
+import { checkData, prisma, saveFile, validations } from '../../utils';
 import { IN_PROD, BCRYPT_SALT } from '../../config';
 
-export async function createUser(_, { avatar, password, confirmPassword, ...data }, context) {
+export async function createUser(_, { avatar, ...args }, context) {
 	try {
-		const isUserExists = await prisma.user.findFirst({ where: { username: data.username } });
-		if (isUserExists) throw new ApolloError(`User '${data.username}' is already exists...`);
+		await validations.validate(validations.signUp, args);
+		const { password, ...data } = args;
 
-		if (password !== confirmPassword) throw new ApolloError(`Password mismatched...`);
+		delete data.confirmPassword;
+
+		await checkData({
+			tableRef: 'user',
+			key: 'username',
+			value: data.username,
+			checkDuplication: true,
+			title: data.username
+		});
 
 		data.password = bcrypt.hashSync(password, BCRYPT_SALT);
+
+		data.avatar = await saveFile(context.req.pipe, avatar);
 
 		const user = await prisma.user.create({ data });
 
 		return user;
 	} catch (error) {
 		if (!IN_PROD) console.error(error);
-		throw new AuthenticationError(error.message);
+		throw new ApolloError(error.message);
 	}
 }

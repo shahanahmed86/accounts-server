@@ -25,7 +25,11 @@ try {
 		typeDefs,
 		resolvers,
 		schemaDirectives,
-		context: ({ req, res }) => ({ req, res })
+		context: ({ req, res }) => ({ req, res }),
+		uploads: {
+			maxFileSize: 1024 * 1024 * 10,
+			maxFiles: 1
+		}
 	});
 
 	server.applyMiddleware({ app, path: '/graphql', cors: false });

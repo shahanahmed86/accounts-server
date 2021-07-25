@@ -1,5 +1,13 @@
-export { default as Mutation } from './mutation';
+import { default as Mutation } from './mutation';
 
-export { default as Query } from './query';
+import { default as Query } from './query';
 
-export * from './relations';
+import * as relations from './relations';
+
+const resolvers = {
+	Query,
+	Mutation,
+	...relations
+};
+
+export default resolvers;

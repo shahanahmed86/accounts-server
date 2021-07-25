@@ -30,8 +30,6 @@ export const cell = Joi.string().length(13).required().label('Cell');
 export const firstName = Joi.string().max(254).required().label('First Name');
 export const lastName = Joi.string().max(254).required().label('Last Name');
 
-export const signIn = Joi.object().keys({ username, password });
-
 export const signUp = Joi.object().keys({
 	username,
 	password,
