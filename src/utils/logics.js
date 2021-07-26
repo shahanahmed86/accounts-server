@@ -1,12 +1,19 @@
 import { ApolloError } from 'apollo-server-express';
 import { existsSync, mkdirSync, unlinkSync, createWriteStream } from 'fs';
+import { v4 as uuid } from 'uuid';
+import cloudinary from 'cloudinary';
 import path from 'path';
 import { prisma } from '.';
+import {
+	CLOUDINARY_API as api_key,
+	CLOUDINARY_NAME as cloud_name,
+	CLOUDINARY_SECRET as api_secret
+} from '../config';
 
-export const saveFile = (pipe, image, old) => {
+export function saveFileLocally(image, old) {
 	return new Promise((resolve, reject) => {
 		image.then(({ createReadStream, ...rest }) => {
-			const filename = `${Math.random().toString(32).substr(7, 5)}-${rest.filename}`;
+			const filename = `${uuid()}-${rest.filename.replace(/ /g, '_')}`;
 
 			// checking whether the uploads folder is exists
 			if (!existsSync('./uploads')) mkdirSync('./uploads');
@@ -14,17 +21,38 @@ export const saveFile = (pipe, image, old) => {
 			// deleting if old file is given
 			if (old && existsSync(`./uploads/${old}`)) unlinkSync(`./uploads/${old}`);
 
-			const stream = createReadStream();
-			pipe(createWriteStream(path.join('./uploads', filename)));
-
-			stream
-				.on('error', (error) => reject(new ApolloError(error.message)))
+			createReadStream()
+				.pipe(createWriteStream(path.join('./uploads', filename)))
+				.on('error', (error) => reject(new Error(error.message)))
 				.on('finish', () => resolve(filename));
 		});
 	});
-};
+}
 
-export const checkData = async ({
+export async function saveFileInCloud(image, filename) {
+	await cloudinary.config({ cloud_name, api_key, api_secret });
+	return new Promise((resolve, reject) => {
+		image.then(({ createReadStream, ...rest }) => {
+			const file = filename.split('.');
+			const l = file.length;
+			const format = file[l - 1];
+			const public_id = file.slice(0, l - 1).join('');
+			createReadStream()
+				.pipe(
+					cloudinary.v2.uploader.upload_stream({
+						public_id,
+						format,
+						overwrite: true,
+						folder: 'accounts-server'
+					})
+				)
+				.on('error', (error) => reject(new Error(error.message)))
+				.on('finish', (success) => console.log(success) || resolve(public_id));
+		});
+	});
+}
+
+export async function checkData({
 	tableRef,
 	key,
 	value,
@@ -35,7 +63,7 @@ export const checkData = async ({
 	id,
 	checkDuplication = false,
 	checkSuspension = false
-}) => {
+}) {
 	const where = { [key]: value };
 	if (relatedTableRef) where[relatedTableRef] = { [relatedKey]: relatedValue };
 	if (id) where.NOT = { id };
@@ -50,4 +78,4 @@ export const checkData = async ({
 	}
 
 	return data;
-};
+}

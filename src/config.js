@@ -11,7 +11,11 @@ export const {
 	SESS_SECRET = 'ssh!secret!',
 
 	REDIS_HOST = 'localhost',
-	REDIS_PASSWORD = 'redis_secret'
+	REDIS_PASSWORD = 'redis_secret',
+
+	CLOUDINARY_API,
+	CLOUDINARY_SECRET,
+	CLOUDINARY_NAME
 } = process.env;
 
 export const APP_PORT = +process.env.APP_PORT || 4000;

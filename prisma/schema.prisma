@@ -41,7 +41,7 @@ model Social {
   firebase_uid String
   avatar       String
   provider     String
-  metadata      String
+  metadata     String
   user         User     @relation(fields: [userId], references: [id])
   userId       String
   createdAt    DateTime @default(now())

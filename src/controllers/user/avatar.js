@@ -1,12 +1,12 @@
 import { prisma } from '../../utils';
 
 export async function avatar(root) {
-	const user = await prisma.user.findUnique({ where: { id: root.id }, include: { socials: true } });
+	const user = await prisma.user.findUnique({ where: { id: root.id }, include: { social: true } });
 	if (!user.avatar) {
-		if (!user.socials || !user.socials.length) return null;
+		if (!user.social) return null;
 
-		const ind = Math.floor(Math.random() * user.socials.length);
-		return user.socials[ind].avatar;
+		const ind = Math.floor(Math.random() * user.social.length);
+		return user.social[ind].avatar;
 	}
 
 	return user.avatar;
