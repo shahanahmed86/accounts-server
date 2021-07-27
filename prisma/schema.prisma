@@ -19,21 +19,23 @@ model Admin {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  username    String   @unique
-  password    String
-  firstName   String
-  lastName    String
-  email       String   @unique
-  cell        String   @unique
-  avatar      String?
-  isVerified  Boolean  @default(false)
-  social      Social?
-  heads       Head[]
-  entries     Entry[]
-  isSuspended Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(uuid())
+  username      String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  cell          String   @unique
+  otp           String?
+  cellVerified  Boolean  @default(false)
+  avatar        String?
+  social        Social?
+  heads         Head[]
+  entries       Entry[]
+  isSuspended   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Social {

@@ -11,3 +11,5 @@ export * from './social';
 export * from './avatar';
 
 export * from './createUser';
+
+export * from './verifyEmail';

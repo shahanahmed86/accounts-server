@@ -1,6 +1,13 @@
 import bcrypt from 'bcryptjs';
 import { ApolloError } from 'apollo-server-errors';
-import { checkData, prisma, saveFileLocally, saveFileInCloud, validations } from '../../utils';
+import {
+	checkData,
+	emailVerification,
+	prisma,
+	saveFileLocally,
+	sendOTPToCell,
+	validations
+} from '../../utils';
 import { IN_PROD, BCRYPT_SALT } from '../../config';
 
 export async function createUser(_, { avatar, ...args }, context) {
@@ -19,9 +26,12 @@ export async function createUser(_, { avatar, ...args }, context) {
 		data.password = bcrypt.hashSync(password, BCRYPT_SALT);
 
 		data.avatar = await saveFileLocally(avatar);
-		await saveFileInCloud(avatar, data.avatar);
+
+		data.otp = await sendOTPToCell(data.cell);
 
 		const user = await prisma.user.create({ data });
+
+		await emailVerification(user);
 
 		return user;
 	} catch (error) {

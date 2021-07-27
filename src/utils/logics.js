@@ -47,7 +47,7 @@ export async function saveFileInCloud(image, filename) {
 					})
 				)
 				.on('error', (error) => reject(new Error(error.message)))
-				.on('finish', (success) => console.log(success) || resolve(public_id));
+				.on('finish', () => resolve(public_id));
 		});
 	});
 }

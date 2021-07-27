@@ -16,7 +16,7 @@ import {
 	IN_PROD
 } from '../config';
 
-import { adminRoutes } from './routes';
+import { adminRoutes, imageRoutes, userRoutes } from './routes';
 
 const app = express();
 
@@ -53,6 +53,11 @@ app.use(
 	})
 );
 
+// dedicated routes
 app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
+
+// generic routes
+app.use('/images', imageRoutes);
 
 export default app;

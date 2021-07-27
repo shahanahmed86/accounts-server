@@ -33,8 +33,8 @@ export function checkGuest(context, args) {
 	else throw new AuthenticationError('Invalid token');
 }
 
-export function restConverter(req, res, next, controller) {
+export function restConverter(req, res, next, controller, root = null) {
 	const context = { req, res, next };
 	const args = { ...req.params, ...req.query, ...req.body };
-	return controller(null, args, context);
+	return controller(root, args, context);
 }
