@@ -13,10 +13,6 @@ export const {
 	REDIS_HOST = 'localhost',
 	REDIS_PASSWORD = 'redis_secret',
 
-	CLOUDINARY_API,
-	CLOUDINARY_SECRET,
-	CLOUDINARY_NAME,
-
 	SMTP_HOST = 'smtp.gmail.com',
 	SMTP_USER,
 	SMTP_PASS,

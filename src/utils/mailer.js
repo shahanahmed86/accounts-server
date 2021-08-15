@@ -1,5 +1,6 @@
 import moment from 'moment';
 import nodemailer from 'nodemailer';
+import ejs from 'ejs';
 import jwt from 'jsonwebtoken';
 import { ApolloError } from 'apollo-server-express';
 import {
@@ -9,12 +10,11 @@ import {
 	SMTP_PASS,
 	IS_NODEMAILER_SECURE,
 	BASE_URL,
-	JWT_SECRET
+	JWT_SECRET,
+	IN_PROD
 } from '../config';
-import { genericTemplate } from './templates';
 
 function setupNodeMailer() {
-	console.log({ SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, IS_NODEMAILER_SECURE });
 	return nodemailer.createTransport({
 		host: SMTP_HOST,
 		port: SMTP_PORT,
@@ -39,14 +39,25 @@ export async function emailVerification({ id, username, email }) {
 			username,
 			logoUrl: `${BASE_URL}/images/logo.png`
 		};
+		const data = await ejs.renderFile('/views/pages/verify.ejs', values);
+		console.log(data);
 
 		await mailer.sendMail({
 			from: 'Admin <info@accounts-server.com>',
 			to: email,
 			subject: 'Account Verification',
-			html: genericTemplate(values)
+			html: data,
+			attachments: [
+				{
+					cid: 'logo',
+					filename: 'logo.png',
+					path: __dirname + '../assets/logo.png',
+					contentType: 'image/png'
+				}
+			]
 		});
 	} catch (error) {
+		if (!IN_PROD) console.error(error);
 		throw new ApolloError(error.message);
 	}
 }

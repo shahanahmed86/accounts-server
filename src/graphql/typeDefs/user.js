@@ -4,32 +4,34 @@ const userSchema = gql`
 	type User {
 		id: String!
 		username: String!
-		password: String
 		firstName: String!
 		lastName: String!
 		email: String!
+		emailVerified: Boolean!
 		cell: String!
+		cellVerified: Boolean!
 		avatar: String
-		social: Social!
+		socials: [Social!]
+		heads: [Head!]
+		transactions: [Transaction!]
+		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!
 	}
 
 	type Social {
 		id: String!
-		firebase_uid: String!
 		avatar: String
 		provider: String!
-		metadata: String!
+		metadata: String! # JSON
 		user: User!
 		createdAt: Date!
 		updatedAt: Date!
 	}
 
 	extend type Query {
-		loggedInUser: User! @auth(shouldUser: true)
 		users: [User!] @auth(shouldAdmin: true)
-		user(id: String!): User @auth(shouldAdmin: true)
+		user(id: String): User @auth(shouldAdmin: true, shouldUser: true)
 	}
 
 	extend type Mutation {

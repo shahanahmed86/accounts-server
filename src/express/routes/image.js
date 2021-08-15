@@ -7,7 +7,7 @@ const router = Router();
 router.get(`/:filename`, (req, res) => {
 	const { filename } = req.params;
 	let file;
-	if (filename === 'logo.png') file = `./src/assets/images/logo.png`;
+	if (filename === 'logo.png') file = './src/assets/logo.png';
 	else file = `./uploads/${filename}`;
 
 	if (existsSync(file)) return res.download(file);

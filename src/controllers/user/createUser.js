@@ -31,7 +31,7 @@ export async function createUser(_, { avatar, ...args }, context) {
 
 		const user = await prisma.user.create({ data });
 
-		await emailVerification(user);
+		emailVerification(user);
 
 		return user;
 	} catch (error) {

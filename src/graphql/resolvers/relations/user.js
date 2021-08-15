@@ -1,9 +1,10 @@
 import { userController } from '../../../controllers';
 
 const User = {
-	password: (...args) => userController.password(...args),
-	social: (...args) => userController.social(...args),
-	avatar: (...args) => userController.avatar(...args)
+	avatar: (...args) => userController.avatar(...args),
+	socials: (...args) => userController.socials(...args),
+	heads: (...args) => userController.heads(...args),
+	transactions: (...args) => userController.transactions(...args),
 };
 
 export default User;

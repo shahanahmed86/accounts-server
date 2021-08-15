@@ -20,6 +20,9 @@ import { adminRoutes, imageRoutes, userRoutes } from './routes';
 
 const app = express();
 
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
 // parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

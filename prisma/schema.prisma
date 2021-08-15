@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -19,23 +16,23 @@ model Admin {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  username      String   @unique
+  id            String        @id @default(uuid())
+  username      String        @unique
   password      String
   firstName     String
   lastName      String
-  email         String   @unique
-  emailVerified Boolean  @default(false)
-  cell          String   @unique
+  email         String        @unique
+  emailVerified Boolean       @default(false)
+  cell          String        @unique
   otp           String?
-  cellVerified  Boolean  @default(false)
+  cellVerified  Boolean       @default(false)
   avatar        String?
-  social        Social?
+  socials       Social[]
   heads         Head[]
-  entries       Entry[]
-  isSuspended   Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  transactions  Transaction[]
+  isSuspended   Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Social {
@@ -43,7 +40,7 @@ model Social {
   firebase_uid String
   avatar       String
   provider     String
-  metadata     String
+  metadata     String // JSON
   user         User     @relation(fields: [userId], references: [id])
   userId       String
   createdAt    DateTime @default(now())
@@ -75,20 +72,33 @@ enum Nature {
 }
 
 model Entry {
-  id          String    @id @default(uuid())
+  id          String       @id @default(uuid())
   type        EntryType
   amount      Float
   description String
-  head        Head      @relation(fields: [headId], references: [id])
+  head        Head         @relation(fields: [headId], references: [id])
   headId      String
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  isSuspended Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  debit       Transaction? @relation(name: "Debit", fields: [debitId], references: [id])
+  debitId     String?
+  credit      Transaction? @relation(name: "Credit", fields: [creditId], references: [id])
+  creditId    String?
+  isSuspended Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 enum EntryType {
   DEBIT
   CREDIT
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  debits      Entry[]  @relation(name: "Debit")
+  credits     Entry[]  @relation(name: "Credit")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  isSuspended Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
