@@ -26,23 +26,21 @@ function setupNodeMailer() {
 	});
 }
 
-export async function emailVerification({ id, username, email }) {
+export async function emailVerification({ id, username, email, gender }) {
 	try {
-		const mailer = setupNodeMailer();
-
 		const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '1h' });
 
 		const values = {
 			action: 'Verify',
-			title: 'Just press the button below to verify your account.',
-			link: `${BASE_URL}/user/verifyEmail/${token}`,
-			username,
-			logoUrl: `${BASE_URL}/images/logo.png`
+			title: `We're excited to have you get started. First, you need to confirm your account. Just press the button below.`,
+			link: `${BASE_URL}/user/verify-email/${token}`,
+			username: `${gender === 'MALE' ? 'Mr. ' : gender === 'FEMALE' ? 'Ms. ' : ''}Shahan`,
+			logo: 'cid:logo'
 		};
-		const data = await ejs.renderFile('/views/pages/verify.ejs', values);
-		console.log(data);
 
-		await mailer.sendMail({
+		const data = await ejs.render('views/pages/verify', values, { async: true });
+
+		await setupNodeMailer().sendMail({
 			from: 'Admin <info@accounts-server.com>',
 			to: email,
 			subject: 'Account Verification',
@@ -51,7 +49,7 @@ export async function emailVerification({ id, username, email }) {
 				{
 					cid: 'logo',
 					filename: 'logo.png',
-					path: __dirname + '../assets/logo.png',
+					path: '../assets/logo.png',
 					contentType: 'image/png'
 				}
 			]

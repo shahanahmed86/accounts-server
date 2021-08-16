@@ -24,14 +24,11 @@ export async function createUser(_, { avatar, ...args }, context) {
 		});
 
 		data.password = bcrypt.hashSync(password, BCRYPT_SALT);
-
 		data.avatar = await saveFileLocally(avatar);
-
 		data.otp = await sendOTPToCell(data.cell);
 
 		const user = await prisma.user.create({ data });
-
-		emailVerification(user);
+		await emailVerification(user);
 
 		return user;
 	} catch (error) {

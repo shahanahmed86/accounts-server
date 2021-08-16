@@ -1,12 +1,14 @@
+import fs from 'fs';
+import ejs from 'ejs';
 import { Router } from 'express';
-import { IN_PROD } from '../../config';
+import { BASE_URL, IN_PROD } from '../../config';
 import { middleware, userController } from '../../controllers';
 import { checkGuest } from '../middleware';
 
 const router = Router();
 
 router.get(
-	`/verifyEmail/:token`,
+	'/verify-email/:token',
 	(...args) => checkGuest(...args, false, true),
 	async (...args) => {
 		try {
