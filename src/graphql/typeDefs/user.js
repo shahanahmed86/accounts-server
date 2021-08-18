@@ -4,6 +4,7 @@ const userSchema = gql`
 	type User {
 		id: String!
 		username: String!
+		gender: Gender!
 		firstName: String!
 		lastName: String!
 		email: String!
@@ -17,6 +18,11 @@ const userSchema = gql`
 		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!
+	}
+
+	enum Gender {
+		MALE
+		FEMALE
 	}
 
 	type Social {
@@ -39,6 +45,7 @@ const userSchema = gql`
 			username: String!
 			password: String!
 			confirmPassword: String!
+			gender: Gender!
 			firstName: String!
 			lastName: String!
 			email: String!
@@ -47,6 +54,10 @@ const userSchema = gql`
 		): User @auth(shouldAdmin: true)
 		suspendUser(id: String!): User @auth(shouldAdmin: true)
 		restoreSuspendedUser(id: String!): User @auth(shouldAdmin: true)
+		sendEmailVerification(email: String!): Status!
+		sendCellVerificationCode(cell: String!): Status!
+		verifyCell(cell: String!, otp: String!): Status!
+		socialLogin(token: String!): User! @guest(shouldUser: true)
 		signInUser(username: String!, password: String!): User @guest(shouldUser: true)
 		signOutUser: Boolean! @auth(shouldUser: true)
 	}

@@ -29,11 +29,13 @@ export const email = Joi.string().email().required().label('Email');
 export const cell = Joi.string().length(13).required().label('Cell');
 export const firstName = Joi.string().max(254).required().label('First Name');
 export const lastName = Joi.string().max(254).required().label('Last Name');
+export const gender = Joi.string().max(254).required().label('Gender');
 
 export const signUp = Joi.object().keys({
 	username,
 	password,
 	confirmPassword,
+	gender,
 	email,
 	cell,
 	firstName,

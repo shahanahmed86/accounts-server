@@ -10,9 +10,9 @@ import {
 	REDIS_HOST,
 	REDIS_PASSWORD,
 	REDIS_PORT,
-	SESS_NAME,
-	SESS_SECRET,
-	SESS_LIFETIME,
+	SESSION_NAME,
+	SESSION_SECRET,
+	SESSION_LIFETIME,
 	IN_PROD
 } from '../config';
 
@@ -44,12 +44,12 @@ const store = new RedisStore({ client });
 app.use(
 	session({
 		store,
-		name: SESS_NAME,
-		secret: SESS_SECRET,
+		name: SESSION_NAME,
+		secret: SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		cookie: {
-			maxAge: SESS_LIFETIME,
+			maxAge: SESSION_LIFETIME,
 			sameSite: true,
 			secure: IN_PROD
 		}

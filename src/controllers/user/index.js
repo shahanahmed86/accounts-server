@@ -19,3 +19,15 @@ export * from './avatar';
 export * from './createUser';
 
 export * from './verifyEmail';
+
+export * from './suspendUser';
+
+export * from './restoreSuspendedUser';
+
+export * from './sendEmailVerification';
+
+export * from './sendCellVerificationCode';
+
+export * from './verifyCell';
+
+export * from './socialLogin';

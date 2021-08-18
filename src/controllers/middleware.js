@@ -8,7 +8,7 @@ export async function checkAuth(context, args) {
 
 		const { adminId } = context.req.session;
 		const admin = await getUserData(context, 'admin', 'id', adminId, 'Admin');
-		admin.password = null;
+		delete admin.password;
 		admin.role = 'admin';
 
 		context.res.locals.user = admin;
@@ -17,12 +17,14 @@ export async function checkAuth(context, args) {
 
 		const { userId } = context.req.session;
 		const user = await getUserData(context, 'user', 'id', userId, 'User', true);
-		user.password = null;
+		if (!user.emailVerified) throw new AuthenticationError('Please verify your email');
+		else if (!user.cellVerified) throw new AuthenticationError('Please verify your cell');
+		delete user.password;
 		user.role = 'user';
 
 		context.res.locals.user = user;
 	} else {
-		throw new AuthenticationError('You must be logged in...');
+		throw new AuthenticationError('You must be logged in');
 	}
 }
 

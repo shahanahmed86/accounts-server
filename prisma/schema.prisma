@@ -19,6 +19,7 @@ model User {
   id            String        @id @default(uuid())
   username      String        @unique
   password      String
+  gender        Gender        @default(MALE)
   firstName     String
   lastName      String
   email         String        @unique
@@ -33,6 +34,11 @@ model User {
   isSuspended   Boolean       @default(false)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }
 
 model Social {

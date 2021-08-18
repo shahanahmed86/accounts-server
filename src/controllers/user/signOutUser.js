@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-errors';
-import { IN_PROD } from '../../config';
+import { IN_PROD, SESSION_NAME } from '../../config';
 import { signOut } from '../../utils';
 
 export async function signOutUser(_, __, context) {

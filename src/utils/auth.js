@@ -1,6 +1,7 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { IN_PROD, SESS_NAME } from '../config';
+import { IN_PROD, SESSION_NAME } from '../config';
 import { checkData } from '.';
+import prisma from './prisma';
 
 const signedIn = (req, key) => (key ? req.session[key] : req.session);
 
@@ -16,15 +17,23 @@ export const ensureSignedOut = (req, key) => {
 	}
 };
 
-export const signOut = (req, res) => {
+export const signOut = (req, res, isAdmin = false) => {
 	return new Promise((resolve, reject) => {
-		req.session.destroy((err) => {
-			if (err) reject(err);
-
-			res.clearCookie(SESS_NAME);
-
+		if (isAdmin && 'userId' in req.session) {
+			delete req.session.adminId;
 			resolve(true);
-		});
+		} else if (!isAdmin && 'adminId' in req.session) {
+			delete req.session.userId;
+			resolve(true);
+		} else {
+			req.session.destroy((err) => {
+				if (err) reject(err);
+
+				res.clearCookie(SESSION_NAME);
+
+				resolve(true);
+			});
+		}
 	});
 };
 
@@ -42,7 +51,62 @@ export const getUserData = async (
 		return user;
 	} catch (error) {
 		if (!IN_PROD) console.error(error);
-		await signOut(context.req, context.res);
-		throw new AuthenticationError('Unauthorized Access detected...');
+		await signOut(context.req, context.res, tableRef === 'admin');
+		throw new AuthenticationError('Unauthorized Access detected');
 	}
 };
+
+export function getSocialUserData(uid) {
+	return admin
+		.auth()
+		.getUser(uid)
+		.then((userRecord) => userRecord.toJSON());
+}
+
+export async function getOrCreateUser({
+	email,
+	uid: firebase_uid,
+	displayName,
+	photoURL: avatar,
+	providerData,
+	...userData
+}) {
+	const [firstName, ...lastName] = displayName.split(' ');
+	const data = {
+		email,
+		firstName,
+		lastName: lastName.join(' '),
+		emailVerified: true
+	};
+	let user = await prisma.user.findUnique({ where: { email } });
+
+	if (!user) {
+		data.socials = {
+			create: {
+				avatar,
+				firebase_uid,
+				provider: providerData.map((p) => p.providerId).join(', '),
+				metadata: JSON.stringify({ providerData, ...userData })
+			}
+		};
+		user = await prisma.user.create({ data });
+	} else {
+		user = await prisma.user.update({
+			where: { email },
+			data: {
+				socials: {
+					upsert: {
+						where: { firebase_uid },
+						create: {
+							avatar,
+							provider: providerData.map((p) => p.providerId).join(', '),
+							metadata: JSON.stringify({ providerData, ...userData })
+						}
+					}
+				}
+			}
+		});
+	}
+
+	return user;
+}

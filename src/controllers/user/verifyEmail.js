@@ -4,7 +4,7 @@ import { checkData, prisma, validateToken } from '../../utils';
 export async function verifyEmail(_, { token }) {
 	const decoded = validateToken(token);
 
-	await checkData({
+	const user = await checkData({
 		tableRef: 'user',
 		key: 'id',
 		value: decoded.id,
@@ -12,10 +12,12 @@ export async function verifyEmail(_, { token }) {
 		checkSuspension: true
 	});
 
-	await prisma.user.update({
-		where: { id: decoded.id },
-		data: { emailVerified: true }
-	});
+	if (!user.emailVerified) {
+		await prisma.user.update({
+			where: { id: decoded.id },
+			data: { emailVerified: true }
+		});
+	}
 
 	return `${BASE_URL}/login`;
 }

@@ -11,7 +11,7 @@ router.get(`/:filename`, (req, res) => {
 	else file = `./uploads/${filename}`;
 
 	if (existsSync(file)) return res.download(file);
-	res.status(404).send('file not found...');
+	res.status(404).send('file not found');
 });
 
 export default router;

@@ -1,3 +1,4 @@
+import fs from 'fs';
 import moment from 'moment';
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
@@ -34,11 +35,11 @@ export async function emailVerification({ id, username, email, gender }) {
 			action: 'Verify',
 			title: `We're excited to have you get started. First, you need to confirm your account. Just press the button below.`,
 			link: `${BASE_URL}/user/verify-email/${token}`,
-			username: `${gender === 'MALE' ? 'Mr. ' : gender === 'FEMALE' ? 'Ms. ' : ''}Shahan`,
+			username: `${gender === 'MALE' ? 'Mr. ' : gender === 'FEMALE' ? 'Ms. ' : ''}${username}`,
 			logo: 'cid:logo'
 		};
 
-		const data = await ejs.render('views/pages/verify', values, { async: true });
+		const data = await ejs.renderFile('./views/verify.ejs', values);
 
 		await setupNodeMailer().sendMail({
 			from: 'Admin <info@accounts-server.com>',
@@ -49,7 +50,7 @@ export async function emailVerification({ id, username, email, gender }) {
 				{
 					cid: 'logo',
 					filename: 'logo.png',
-					path: '../assets/logo.png',
+					path: `${BASE_URL}/images/logo.png`,
 					contentType: 'image/png'
 				}
 			]

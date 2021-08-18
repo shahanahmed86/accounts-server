@@ -41,7 +41,7 @@ router.post(
 		try {
 			const [, res] = args;
 			await middleware.restConverter(...args, adminController.signOutAdmin);
-			res.status(200).send('You"ve successfully signed out...');
+			res.status(200).send('You"ve successfully signed out');
 		} catch (error) {
 			if (!IN_PROD) console.error(error);
 			res.status(400).send(error.message);
