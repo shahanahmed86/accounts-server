@@ -50,3 +50,25 @@ export async function checkData({
 
 	return data;
 }
+
+export function filterRecordForUser(context, where = {}) {
+	const { id: userId, role } = context.res.locals.user;
+
+	if (role === 'user') {
+		where.userId = userId;
+		where.isSuspended = false;
+	}
+
+	return where;
+}
+
+export function checkSuspensionForUser(context, data, key = 'userId') {
+	const { id: userId, role } = context.res.locals.user;
+
+	if (role === 'user' && data) {
+		if (data.isSuspended) return null;
+		else if (data[key] !== userId) return null;
+	}
+
+	return data;
+}

@@ -16,6 +16,8 @@ export async function socialLogin(_, { token }, context) {
 		const user = await getOrCreateUser(userRecord);
 
 		context.req.session.userId = user.id;
+
+		return user;
 	} catch (error) {
 		if (!IN_PROD) console.error(error);
 		throw new AuthenticationError(error.message);

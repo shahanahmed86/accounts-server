@@ -1,10 +1,8 @@
 import { prisma } from '../../utils';
 
-export async function avatar(root) {
+export async function signupVia(root) {
 	const user = await prisma.user.findUnique({ where: { id: root.id }, include: { social: true } });
-	if (user.avatar) return user.avatar;
+	if (!user.signUpWithSocials || !user.social) return 'sign-up';
 
-	if (!user.social) return null;
-
-	return user.social.photoURL;
+	return user.social.providerId;
 }

@@ -11,8 +11,8 @@ router.get(
 	'/verify-email/:token',
 	(...args) => checkGuest(...args, false, true),
 	async (...args) => {
+		const [, res] = args;
 		try {
-			const [, res] = args;
 			const redirectUrl = await middleware.restConverter(...args, userController.verifyEmail);
 
 			res.status(200).redirect(redirectUrl);

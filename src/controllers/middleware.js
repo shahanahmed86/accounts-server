@@ -17,8 +17,10 @@ export async function checkAuth(context, args) {
 
 		const { userId } = context.req.session;
 		const user = await getUserData(context, 'user', 'id', userId, 'User', true);
-		if (!user.emailVerified) throw new AuthenticationError('Please verify your email');
-		else if (!user.cellVerified) throw new AuthenticationError('Please verify your cell');
+		if (!user.signUpWithSocials) {
+			if (!user.emailVerified) throw new AuthenticationError('Please verify your email');
+			else if (!user.cellVerified) throw new AuthenticationError('Please verify your cell');
+		}
 		delete user.password;
 		user.role = 'user';
 

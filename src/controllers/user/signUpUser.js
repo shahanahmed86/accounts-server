@@ -9,8 +9,9 @@ import {
 	validations
 } from '../../utils';
 import { IN_PROD, BCRYPT_SALT } from '../../config';
+import moment from 'moment';
 
-export async function createUser(_, { avatar, ...args }, context) {
+export async function signUpUser(_, { avatar, ...args }, context) {
 	try {
 		await validations.validate(validations.signUp, args);
 		const { password, confirmPassword, ...data } = args;
@@ -26,8 +27,10 @@ export async function createUser(_, { avatar, ...args }, context) {
 		data.password = bcrypt.hashSync(password, BCRYPT_SALT);
 		data.avatar = await saveFileLocally(avatar);
 		data.otp = await sendOTPToCell(data.cell);
+		data.otpExpiresAt = moment().add(1, 'h').toDate();
 
 		const user = await prisma.user.create({ data });
+
 		await emailVerification(user);
 
 		return user;

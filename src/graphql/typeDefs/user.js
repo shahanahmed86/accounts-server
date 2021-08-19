@@ -3,18 +3,19 @@ const { gql } = require('apollo-server-express');
 const userSchema = gql`
 	type User {
 		id: String!
-		username: String!
-		gender: Gender!
-		firstName: String!
-		lastName: String!
-		email: String!
+		username: String
+		gender: Gender
+		firstName: String
+		lastName: String
+		email: String
 		emailVerified: Boolean!
-		cell: String!
+		cell: String
 		cellVerified: Boolean!
 		avatar: String
-		socials: [Social!]
+		signupVia: String!
 		heads: [Head!]
 		transactions: [Transaction!]
+		entries: [Entry!]
 		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!
@@ -25,23 +26,13 @@ const userSchema = gql`
 		FEMALE
 	}
 
-	type Social {
-		id: String!
-		avatar: String
-		provider: String!
-		metadata: String! # JSON
-		user: User!
-		createdAt: Date!
-		updatedAt: Date!
-	}
-
 	extend type Query {
 		users: [User!] @auth(shouldAdmin: true)
 		user(id: String): User @auth(shouldAdmin: true, shouldUser: true)
 	}
 
 	extend type Mutation {
-		createUser(
+		signUpUser(
 			username: String!
 			password: String!
 			confirmPassword: String!
@@ -51,7 +42,7 @@ const userSchema = gql`
 			email: String!
 			cell: String!
 			avatar: Upload!
-		): User @auth(shouldAdmin: true)
+		): User @guest(shouldUser: true)
 		suspendUser(id: String!): User @auth(shouldAdmin: true)
 		restoreSuspendedUser(id: String!): User @auth(shouldAdmin: true)
 		sendEmailVerification(email: String!): Status!

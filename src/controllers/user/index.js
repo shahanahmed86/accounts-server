@@ -6,17 +6,13 @@ export * from './signInUser';
 
 export * from './signOutUser';
 
-export * from './password';
-
-export * from './socials';
-
 export * from './heads';
 
 export * from './transactions';
 
 export * from './avatar';
 
-export * from './createUser';
+export * from './signUpUser';
 
 export * from './verifyEmail';
 
@@ -31,3 +27,15 @@ export * from './sendCellVerificationCode';
 export * from './verifyCell';
 
 export * from './socialLogin';
+
+export * from './firstName';
+
+export * from './lastName';
+
+export * from './email';
+
+export * from './cell';
+
+export * from './signupVia';
+
+export * from './entries';

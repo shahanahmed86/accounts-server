@@ -1,5 +1,6 @@
-import { prisma } from '../../utils';
+import { filterRecordForUser, prisma } from '../../utils';
 
 export function credits(root) {
-	return prisma.transaction.findUnique({ where: { id: root.id } }).credits();
+	const where = filterRecordForUser(context);
+	return prisma.transaction.findUnique({ where: { id: root.id } }).credits({ where });
 }

@@ -1,10 +1,11 @@
 import { prisma } from '../../utils';
 
-export async function avatar(root) {
+export async function firstName(root) {
 	const user = await prisma.user.findUnique({ where: { id: root.id }, include: { social: true } });
-	if (user.avatar) return user.avatar;
+	if (user.firstName) return user.firstName;
 
 	if (!user.social) return null;
 
-	return user.social.photoURL;
+	const [firstName] = user.social.displayName.split(' ');
+	return firstName;
 }

@@ -22,6 +22,21 @@ const headSchema = gql`
 		EQUITY
 		REVENUE
 	}
+
+	extend type Query {
+		heads: [Head!] @auth(shouldUser: true, shouldAdmin: true)
+		head(id: String!): Head @auth(shouldUser: true, shouldAdmin: true)
+	}
+
+	extend type Mutation {
+		createHead(
+			label: String!
+			nature: Nature!
+			parentId: String
+			userId: String
+			isTransactable: Boolean
+		): Head! @auth(shouldUser: true, shouldAdmin: true)
+	}
 `;
 
 export default headSchema;

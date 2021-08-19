@@ -1,5 +1,6 @@
-import { prisma } from '../../utils';
+import { checkSuspensionForUser, prisma } from '../../utils';
 
-export function parent(root) {
-	return prisma.head.findUnique({ where: { id: root.id } }).parent();
+export async function parent(root, _, context) {
+	const parent = await prisma.head.findUnique({ where: { id: root.id } }).parent();
+	return checkSuspensionForUser(context, parent);
 }

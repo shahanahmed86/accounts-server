@@ -1,7 +1,13 @@
+import admin from 'firebase-admin';
 import { AuthenticationError } from 'apollo-server-express';
 import { IN_PROD, SESSION_NAME } from '../config';
-import { checkData } from '.';
-import prisma from './prisma';
+import { checkData, prisma } from '.';
+
+import serviceAccount from './serviceAccountKey.json';
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount)
+});
 
 const signedIn = (req, key) => (key ? req.session[key] : req.session);
 
@@ -64,49 +70,39 @@ export function getSocialUserData(uid) {
 }
 
 export async function getOrCreateUser({
+	uid,
 	email,
-	uid: firebase_uid,
 	displayName,
-	photoURL: avatar,
-	providerData,
-	...userData
+	phoneNumber,
+	photoURL,
+	providerData
 }) {
-	const [firstName, ...lastName] = displayName.split(' ');
-	const data = {
-		email,
-		firstName,
-		lastName: lastName.join(' '),
-		emailVerified: true
-	};
-	let user = await prisma.user.findUnique({ where: { email } });
+	const providerId = providerData.map(({ providerId }) => providerId).join(', ');
 
-	if (!user) {
-		data.socials = {
-			create: {
-				avatar,
-				firebase_uid,
-				provider: providerData.map((p) => p.providerId).join(', '),
-				metadata: JSON.stringify({ providerData, ...userData })
+	const socialData = {
+		providerId,
+		uid,
+		displayName,
+		email,
+		phoneNumber,
+		photoURL
+	};
+	return prisma.user.upsert({
+		where: { email },
+		create: {
+			email,
+			signUpWithSocials: true,
+			social: {
+				create: socialData
 			}
-		};
-		user = await prisma.user.create({ data });
-	} else {
-		user = await prisma.user.update({
-			where: { email },
-			data: {
-				socials: {
-					upsert: {
-						where: { firebase_uid },
-						create: {
-							avatar,
-							provider: providerData.map((p) => p.providerId).join(', '),
-							metadata: JSON.stringify({ providerData, ...userData })
-						}
-					}
+		},
+		update: {
+			social: {
+				upsert: {
+					create: socialData,
+					update: socialData
 				}
 			}
-		});
-	}
-
-	return user;
+		}
+	});
 }

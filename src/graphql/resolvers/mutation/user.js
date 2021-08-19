@@ -1,7 +1,7 @@
 import { userController } from '../../../controllers';
 
 const user = {
-	createUser: (...args) => userController.createUser(...args),
+	signUpUser: (...args) => userController.signUpUser(...args),
 	signInUser: (...args) => userController.signInUser(...args),
 	suspendUser: (...args) => userController.suspendUser(...args),
 	restoreSuspendedUser: (...args) => userController.restoreSuspendedUser(...args),

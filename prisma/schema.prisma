@@ -16,24 +16,28 @@ model Admin {
 }
 
 model User {
-  id            String        @id @default(uuid())
-  username      String        @unique
-  password      String
-  gender        Gender        @default(MALE)
-  firstName     String
-  lastName      String
-  email         String        @unique
-  emailVerified Boolean       @default(false)
-  cell          String        @unique
-  otp           String?
-  cellVerified  Boolean       @default(false)
-  avatar        String?
-  socials       Social[]
-  heads         Head[]
-  transactions  Transaction[]
-  isSuspended   Boolean       @default(false)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id                String        @id @default(uuid())
+  username          String?       @unique
+  password          String?
+  gender            Gender?
+  firstName         String?
+  lastName          String?
+  email             String?       @unique
+  emailVerified     Boolean       @default(false)
+  cell              String?       @unique
+  otp               String?
+  otpExpiresAt      DateTime?
+  cellVerified      Boolean       @default(false)
+  avatar            String?
+  signUpWithSocials Boolean       @default(false)
+  social            Social?
+  socialId          String?
+  heads             Head[]
+  transactions      Transaction[]
+  entries           Entry[]
+  isSuspended       Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 }
 
 enum Gender {
@@ -42,15 +46,17 @@ enum Gender {
 }
 
 model Social {
-  id           String   @id @default(uuid())
-  firebase_uid String
-  avatar       String
-  provider     String
-  metadata     String // JSON
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(uuid())
+  uid         String   @unique
+  displayName String?
+  email       String?
+  phoneNumber String?
+  photoURL    String?
+  providerId  String // like google or facebook
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Head {
@@ -88,6 +94,8 @@ model Entry {
   debitId     String?
   credit      Transaction? @relation(name: "Credit", fields: [creditId], references: [id])
   creditId    String?
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
   isSuspended Boolean      @default(false)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
