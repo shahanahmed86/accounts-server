@@ -9,7 +9,7 @@ const entrySchema = gql`
 		head: Head!
 		debit: Transaction
 		credit: Transaction
-		user: User
+		user: User!
 		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!

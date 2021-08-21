@@ -11,3 +11,5 @@ export * from './heads';
 export * from './head';
 
 export * from './createHead';
+
+export * from './updateHead';

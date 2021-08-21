@@ -36,6 +36,10 @@ const headSchema = gql`
 			userId: String
 			isTransactable: Boolean
 		): Head! @auth(shouldUser: true, shouldAdmin: true)
+		updateHead(id: String!, label: String, isTransactable: Boolean): Head!
+			@auth(shouldUser: true, shouldAdmin: true)
+		suspendHead(id: String!): Status! @auth(shouldUser: true, shouldAdmin: true)
+		restoreSuspendHead(id: String!): Status! @auth(shouldUser: true, shouldAdmin: true)
 	}
 `;
 

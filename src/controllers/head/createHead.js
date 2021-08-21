@@ -4,33 +4,7 @@ import { IN_PROD } from '../../config';
 
 export async function createHead(_, data, context) {
 	try {
-		/** data @params
-		 * label: String!
-		 * nature: Nature!
-		 * parentId: String
-		 * userId: String // when user is creating then ID will be taken from session
-		 * isTransactable: Boolean
-		 **/
 		const { id: userId, role } = context.res.locals.user;
-
-		await checkData({
-			tableRef: 'head',
-			key: 'label',
-			value: data.label,
-			title: 'Head',
-			checkDuplication: true
-		});
-
-		if (data.parentId) {
-			const parent = await checkData({
-				tableRef: 'head',
-				key: 'id',
-				value: data.parentId,
-				title: 'Parent Head',
-				checkSuspension: true
-			});
-			if (parent.isTransactable) throw new ApolloError('Select Head is only for transaction...');
-		}
 
 		if (role === 'user') data.userId = userId;
 		else {
@@ -40,6 +14,33 @@ export async function createHead(_, data, context) {
 				value: data.userId,
 				title: 'User',
 				checkSuspension: true
+			});
+		}
+
+		let parent;
+		if (data.parentId) {
+			parent = await checkData({
+				tableRef: 'head',
+				key: 'id',
+				value: data.parentId,
+				title: 'Parent Head',
+				checkSuspension: true,
+				relatedTableRef: 'user',
+				relatedKey: 'id',
+				relatedValue: data.userId
+			});
+			if (parent.isTransactable) throw new ApolloError('Select Head is only for transaction...');
+			if (parent.nature !== data.nature) throw new ApolloError('Invalid Nature selected...');
+
+			await checkData({
+				tableRef: 'head',
+				key: 'label',
+				value: data.label,
+				title: 'Head',
+				checkDuplication: true,
+				relatedTableRef: 'parent',
+				relatedKey: 'id',
+				relatedValue: data.parentId
 			});
 		}
 

@@ -33,18 +33,21 @@ export async function checkData({
 	title,
 	id,
 	checkDuplication = false,
-	checkSuspension = false
+	checkSuspension = false,
+	include
 }) {
 	const where = { [key]: value };
 	if (relatedTableRef) where[relatedTableRef] = { [relatedKey]: relatedValue };
 	if (id) where.NOT = { id };
-	const data = await prisma[tableRef].findFirst({ where });
+	const findFirstQuery = { where };
+	if (include) findFirstQuery.include = include;
+	const data = await prisma[tableRef].findFirst(findFirstQuery);
 
 	if (checkDuplication && data) throw new ApolloError(`${title} is already created...`);
 
 	if (!checkDuplication && !data) throw new ApolloError(`${title} not found...`);
 
-	if (checkSuspension && data && data.isArchived) {
+	if (checkSuspension && data && data.isSuspended) {
 		throw new ApolloError(`${title} is already deleted...`);
 	}
 
@@ -71,4 +74,8 @@ export function checkSuspensionForUser(context, data, key = 'userId') {
 	}
 
 	return data;
+}
+
+export function includeProperties(where = {}, obj) {
+	Object.keys(obj).map((key) => (where[key] = obj[key]));
 }
