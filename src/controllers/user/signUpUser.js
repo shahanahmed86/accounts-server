@@ -3,6 +3,7 @@ import { ApolloError } from 'apollo-server-errors';
 import {
 	checkData,
 	emailVerification,
+	createNatureOfAccounts,
 	prisma,
 	saveFileLocally,
 	sendOTPToCell,
@@ -29,6 +30,7 @@ export async function signUpUser(_, { avatar, ...args }, context) {
 		data.otp = await sendOTPToCell(data.cell);
 		data.otpExpiresAt = moment().add(1, 'h').toDate();
 
+		createNatureOfAccounts(data);
 		const user = await prisma.user.create({ data });
 
 		await emailVerification(user);

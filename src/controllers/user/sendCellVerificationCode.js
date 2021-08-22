@@ -27,7 +27,7 @@ export async function sendCellVerificationCode(_, { cell, ...data }, context) {
 		if (!IN_PROD) console.error(error);
 		return {
 			success: false,
-			message: 'Cell Verification failed',
+			message: `Cell Verification failed due to ${error.message}`,
 			debugMessage: error.message
 		};
 	}

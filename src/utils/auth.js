@@ -69,6 +69,35 @@ export function getSocialUserData(uid) {
 		.then((userRecord) => userRecord.toJSON());
 }
 
+export function createNatureOfAccounts(data) {
+	data.heads = {
+		createMany: {
+			data: [
+				{
+					label: 'Asset',
+					nature: 'ASSET'
+				},
+				{
+					label: 'Expense',
+					nature: 'EXPENSE'
+				},
+				{
+					label: 'Revenue',
+					nature: 'REVENUE'
+				},
+				{
+					label: 'Liability',
+					nature: 'LIABILITY'
+				},
+				{
+					label: 'Equity',
+					nature: 'EQUITY'
+				}
+			]
+		}
+	};
+}
+
 export async function getOrCreateUser({
 	uid,
 	email,

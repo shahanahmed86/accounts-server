@@ -79,3 +79,49 @@ export function checkSuspensionForUser(context, data, key = 'userId') {
 export function includeProperties(where = {}, obj) {
 	Object.keys(obj).map((key) => (where[key] = obj[key]));
 }
+
+export async function transferToHead(head, newHead, table = 'head') {
+	if (table === 'head') {
+		const children = await prisma.head.findFirst({ where: { id: head.id } }).children();
+		if (!children.length) return;
+
+		await Promise.all(children.map((child) => updateChildren(child, newHead)));
+	} else if (table === 'entry') {
+		const entries = await prisma.head.findFirst({ where: { id: head.id } }).entries();
+		if (!entries.length) return;
+
+		await Promise.all(
+			entries.map((entry) => {
+				prisma.entry.update({
+					where: { id: entry.id },
+					data: {
+						head: { connect: { id: newHead.id } }
+					}
+				});
+			})
+		);
+	}
+}
+
+async function updateChildren(child, newHead) {
+	const data = { parent: { connect: { id: newHead.id } } };
+	if (child.nature !== newHead.nature) data.nature = newHead.nature;
+
+	await prisma.head.update({ where: { id: child.id }, data });
+	if (!child.isTransactable) {
+		const children = await prisma.head.findFirst({ where: { id: child.id } }).children();
+		await Promise.all(children.map((child) => updateChildren(child, newHead)));
+	}
+}
+
+export async function isHeadValidToTransfer(head, newHead) {
+	if (head.isTransactable) {
+		if (!newHead.isTransactable) throw new ApolloError('You must select transactable head ID');
+
+		await transferToHead(head, newHead, 'entry');
+	} else {
+		if (newHead.isTransactable) throw new ApolloError('you must select non-transactable head ID');
+
+		await transferToHead(head, newHead);
+	}
+}

@@ -82,6 +82,7 @@ CREATE TABLE "Entry" (
     "headId" TEXT NOT NULL,
     "debitId" TEXT,
     "creditId" TEXT,
+    "userId" TEXT NOT NULL,
     "isSuspended" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -135,6 +136,9 @@ ALTER TABLE "Entry" ADD FOREIGN KEY ("debitId") REFERENCES "Transaction"("id") O
 
 -- AddForeignKey
 ALTER TABLE "Entry" ADD FOREIGN KEY ("creditId") REFERENCES "Transaction"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Entry" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

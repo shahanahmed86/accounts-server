@@ -29,17 +29,15 @@ const headSchema = gql`
 	}
 
 	extend type Mutation {
-		createHead(
-			label: String!
-			nature: Nature!
-			parentId: String
-			userId: String
-			isTransactable: Boolean
-		): Head! @auth(shouldUser: true, shouldAdmin: true)
+		createHead(label: String!, parentId: String, userId: String, isTransactable: Boolean): Head!
+			@auth(shouldUser: true, shouldAdmin: true)
 		updateHead(id: String!, label: String, isTransactable: Boolean): Head!
 			@auth(shouldUser: true, shouldAdmin: true)
-		suspendHead(id: String!): Status! @auth(shouldUser: true, shouldAdmin: true)
+		suspendHead(id: String!, transferHeadId: String): Status!
+			@auth(shouldUser: true, shouldAdmin: true)
 		restoreSuspendHead(id: String!): Status! @auth(shouldUser: true, shouldAdmin: true)
+		transferAccountHead(id: String!, transferHeadId: String!): Status!
+			@auth(shouldUser: true, shouldAdmin: true)
 	}
 `;
 

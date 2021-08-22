@@ -13,3 +13,9 @@ export * from './head';
 export * from './createHead';
 
 export * from './updateHead';
+
+export * from './suspendHead';
+
+export * from './restoreSuspendHead';
+
+export * from './transferAccountHead';

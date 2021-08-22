@@ -25,7 +25,7 @@ export async function sendEmailVerification(_, { email }, context) {
 		if (!IN_PROD) console.error(error);
 		return {
 			success: false,
-			message: 'Email Verification failed',
+			message: `Email Verification failed due to ${error.message}`,
 			debugMessage: error.message
 		};
 	}

@@ -30,7 +30,8 @@ export async function createHead(_, data, context) {
 				relatedValue: data.userId
 			});
 			if (parent.isTransactable) throw new ApolloError('Select Head is only for transaction...');
-			if (parent.nature !== data.nature) throw new ApolloError('Invalid Nature selected...');
+
+			data.nature = parent.nature;
 
 			await checkData({
 				tableRef: 'head',
