@@ -2,19 +2,26 @@ import { ApolloError } from 'apollo-server-errors';
 import { checkData, prisma } from '../../utils';
 import { IN_PROD } from '../../config';
 
-export async function createHead(_, data, context) {
+export async function createHead(_, { userId, ...data }, context) {
 	try {
-		const { id: userId, role } = context.res.locals.user;
+		const { id: sessionUserId, role } = context.res.locals.user;
+		if (role === 'admin' && !userId) throw new ApolloError('User ID is required...');
 
-		if (role === 'user') data.userId = userId;
-		else {
+		if (role === 'user') {
+			data.user = {
+				connect: { id: sessionUserId }
+			};
+		} else {
 			await checkData({
 				tableRef: 'user',
 				key: 'id',
-				value: data.userId,
+				value: userId,
 				title: 'User',
 				checkSuspension: true
 			});
+			data.user = {
+				connect: { id: userId }
+			};
 		}
 
 		let parent;
@@ -27,7 +34,7 @@ export async function createHead(_, data, context) {
 				checkSuspension: true,
 				relatedTableRef: 'user',
 				relatedKey: 'id',
-				relatedValue: data.userId
+				relatedValue: role === 'admin' ? userId : sessionUserId
 			});
 			if (parent.isTransactable) throw new ApolloError('Select Head is only for transaction...');
 

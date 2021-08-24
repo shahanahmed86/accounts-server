@@ -35,7 +35,7 @@ const headSchema = gql`
 			@auth(shouldUser: true, shouldAdmin: true)
 		suspendHead(id: String!, transferHeadId: String): Status!
 			@auth(shouldUser: true, shouldAdmin: true)
-		restoreSuspendHead(id: String!): Status! @auth(shouldUser: true, shouldAdmin: true)
+		restoreSuspendedHead(id: String!): Status! @auth(shouldUser: true, shouldAdmin: true)
 		transferAccountHead(id: String!, transferHeadId: String!): Status!
 			@auth(shouldUser: true, shouldAdmin: true)
 	}

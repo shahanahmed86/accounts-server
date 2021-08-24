@@ -4,7 +4,7 @@ const head = {
 	createHead: (...args) => headController.createHead(...args),
 	updateHead: (...args) => headController.updateHead(...args),
 	suspendHead: (...args) => headController.suspendHead(...args),
-	restoreSuspendHead: (...args) => headController.restoreSuspendHead(...args),
+	restoreSuspendedHead: (...args) => headController.restoreSuspendedHead(...args),
 	transferAccountHead: (...args) => headController.transferAccountHead(...args)
 };
 

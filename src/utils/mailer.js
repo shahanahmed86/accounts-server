@@ -1,4 +1,3 @@
-import fs from 'fs';
 import moment from 'moment';
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';

@@ -16,6 +16,6 @@ export * from './updateHead';
 
 export * from './suspendHead';
 
-export * from './restoreSuspendHead';
+export * from './restoreSuspendedHead';
 
 export * from './transferAccountHead';

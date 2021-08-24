@@ -125,3 +125,31 @@ export async function isHeadValidToTransfer(head, newHead) {
 		await transferToHead(head, newHead);
 	}
 }
+
+export async function checkFootings(debits, credits, userId, isAdmin) {
+	await Promise.all(debits.map((debit) => preCheckFootings(debit, userId, isAdmin)));
+
+	await Promise.all(credits.map((credit) => preCheckFootings(credit, userId, isAdmin)));
+
+	const totalDebits = debits.reduce((a, c) => (a += c.amount), 0);
+	const totalCredits = credits.reduce((a, c) => (a += c.amount), 0);
+
+	const isFootingEqual = totalDebits === totalCredits;
+	if (!isFootingEqual) throw new ApolloError("Footings aren't equal...");
+}
+
+async function preCheckFootings(debitOrCredit, userId, isAdmin) {
+	const head = await checkData({
+		tableRef: 'head',
+		key: 'id',
+		value: debitOrCredit.headId,
+		title: 'Head ID',
+		relatedTableRef: 'user',
+		relatedKey: 'id',
+		relatedValue: userId,
+		checkSuspension: isAdmin
+	});
+	if (debitOrCredit.amount < 1) {
+		throw new ApolloError(`Please fill amount in the Head ${head.label}`);
+	}
+}

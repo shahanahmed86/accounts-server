@@ -1,7 +1,7 @@
 import { checkData, includeProperties, prisma } from '../../utils';
 import { IN_PROD } from '../../config';
 
-export async function restoreSuspendHead(_, { id }, context) {
+export async function restoreSuspendedHead(_, { id }, context) {
 	try {
 		const { id: userId, role } = context.res.locals.user;
 
