@@ -1,6 +1,25 @@
-# accounts
+![AccountsApp](assets/logo.png 'AccountsApp')
 
-## Installation
+AccountsApp fullstack GraphQL app with React and Node.js.
+
+## Features
+
+- **Scalable GraphQL server:** The server uses [`apollo-server-express`](https://www.npmjs.com/package/apollo-server-express) which is based on Apollo Server & Express.
+- **Pre-configured Apollo Client:** The project comes with a preconfigured setup for Apollo Client.
+- **Prisma**: Develop your database with [Prisma-v2](https://www.prisma.io/client).
+- **Tooling**: Out-of-the-box support for [Adminer](https://adminer.org) to view database.
+- **Extensible**: Simple and flexible [data model](./prisma/schema.prisma) – easy to adjust and extend.
+- **Docker**: Develop your application in containerized format. Write once, run anywhere.
+
+A full-fledged **React, Node and Apollo app**
+
+## Requirements
+
+```sh
+Ensure you have node and docker installed on your machine.
+```
+
+## Getting Started
 
 ```sh
 # Clone (or fork) the repo
@@ -39,6 +58,7 @@ docker exec -it accounts-server_postgres-db_1 psql -U prisma -W dev
 
 ```sh
 docker exec -it accounts-server_cache_1 redis-cli -a secret
+
 # flags
 -it # for interactive
 redis-cli # to load redis command line interface
@@ -76,8 +96,8 @@ curl -X POST localhost:4000/admin/sign-out \
 ```sh
 # git cli for commit
 git commit -m "test" --no-verify
+
 # flags
 -m # for message
 --no-verify # will not perform tests
-
 ```
