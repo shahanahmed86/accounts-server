@@ -70,3 +70,14 @@ curl -X POST localhost:4000/admin/sign-out \
 --cookie # obviously
 -H # headers
 ```
+
+## github
+
+```sh
+# git cli for commit
+git commit -m "test" --no-verify
+# flags
+-m # for message
+--no-verify # will not perform tests
+
+```
